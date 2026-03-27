@@ -1,14 +1,5 @@
-// ============================================================
-// api.js — Frontend API Client
-//
-// This file calls OUR backend server (not external APIs directly).
-// The backend holds the secret API keys — we never put them here.
-//
-// Each function:
-//   1. Calls one of our /api/* endpoints
-//   2. Returns the data if successful
-//   3. Returns a safe fallback object if anything goes wrong
-// ============================================================
+// Handles calls to our backend API.
+// Keeps API keys hidden and returns safe fallback data if something fails.
 
 /**
  * fetchMarketReturn
