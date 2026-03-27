@@ -173,7 +173,7 @@
 
       <!-- Shown before any analysis is run -->
       <div class="empty-state" id="empty-state">
-        <div class="empty-icon">📊</div>
+        <div class="empty-icon"> </div>
         <h3>Your analysis will appear here</h3>
         <p>Fill in the purchase details on the left and click <strong>Run Analysis</strong> to see the true cost of your purchase.</p>
       </div>
@@ -182,9 +182,9 @@
       <div class="loading-state hidden" id="loading-state">
         <!-- Progress log: each line lights up as its API call resolves -->
         <div class="progress-log" id="progress-log">
-          <div class="progress-item" id="prog-market">⏳ Fetching market data...</div>
-          <div class="progress-item" id="prog-inflation">⏳ Fetching inflation data...</div>
-          <div class="progress-item" id="prog-exchange">⏳ Fetching exchange rates...</div>
+          <div class="progress-item" id="prog-market"> Fetching market data...</div>
+          <div class="progress-item" id="prog-inflation"> Fetching inflation data...</div>
+          <div class="progress-item" id="prog-exchange"> Fetching exchange rates...</div>
         </div>
         <!-- Skeleton cards: animated grey placeholders -->
         <div class="skeleton-grid">
@@ -208,7 +208,7 @@
           <!-- Card 1: Investment Potential -->
           <div class="result-card" id="card-invest">
             <div class="card-header">
-              <span class="card-icon">📈</span>
+              <span class="card-icon"> </span>
               <h3>Investment Potential</h3>
             </div>
             <div class="card-main-stat">
@@ -221,7 +221,7 @@
           <!-- Card 2: Inflation Reality -->
           <div class="result-card" id="card-inflation">
             <div class="card-header">
-              <span class="card-icon">📉</span>
+              <span class="card-icon"> </span>
               <h3>Inflation Reality</h3>
             </div>
             <div class="inflation-stats">
@@ -242,7 +242,7 @@
           <!-- Card 3: Work Hours (only shown if wage was entered) -->
           <div class="result-card hidden" id="card-hours">
             <div class="card-header">
-              <span class="card-icon">⏰</span>
+              <span class="card-icon"> </span>
               <h3>Work Hours Cost</h3>
             </div>
             <div class="card-main-stat">
@@ -265,7 +265,7 @@
           <!-- Card 4: Break-Even (only shown if recurring toggle is on) -->
           <div class="result-card hidden" id="card-breakeven">
             <div class="card-header">
-              <span class="card-icon">⚖️</span>
+              <span class="card-icon"> </span>
               <h3>Break-Even Analysis</h3>
             </div>
             <div class="card-main-stat">
@@ -304,7 +304,7 @@
   </footer>
 
   <!-- ═══════════════════════════════════════════
-       SCRIPTS — loaded at bottom so HTML is ready
+       SCRIPTS  loaded at bottom so HTML is ready
        Order matters: calculator.js must come before
        ui.js and main.js because they use its functions
   ════════════════════════════════════════════ -->
