@@ -1,10 +1,5 @@
-// ============================================================
-// calculator.js — PurchaseIQ Core Financial Logic
-//
-// This file contains ONLY pure math functions.
-// "Pure" means: no DOM interaction, no API calls.
-// Give it the same inputs and it always returns the same output.
-// ============================================================
+// so literally All the math lives here.
+// No UI or API stuff just pure functionsss.
 
 /**
  * calculateInvestmentGrowth
