@@ -1,0 +1,654 @@
+/* ============================================================
+   style.css — PurchaseIQ
+   Dark financial UI: think Bloomberg Terminal meets fintech
+   ============================================================ */
+
+/* ── CSS Variables (Design Tokens) ─────────────────────────
+   We define all colors once here. If we want to change the
+   green accent for example, we only change it in ONE place
+   and it updates everywhere automatically. */
+:root {
+  --bg-primary:      #0a0e17;   /* Deep navy-black background */
+  --bg-card:         #111827;   /* Card surfaces */
+  --bg-card-hover:   #1a2234;   /* Card hover state */
+  --accent-green:    #00d4aa;   /* Positive values / CTA button */
+  --accent-amber:    #f59e0b;   /* Warnings / costs */
+  --accent-red:      #ef4444;   /* Negative / loss values */
+  --text-primary:    #f1f5f9;   /* Main text */
+  --text-secondary:  #94a3b8;   /* Labels and secondary info */
+  --text-muted:      #475569;   /* Placeholder / disabled */
+  --border:          #1e2d40;   /* Card borders */
+  --border-focus:    #00d4aa;   /* Input focus ring */
+  --radius:          12px;      /* Card corner radius */
+  --radius-sm:       6px;       /* Input corner radius */
+  --transition:      0.2s ease; /* Standard animation speed */
+}
+
+/* ── Reset ───────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+  /* Subtle animated grid background — pure CSS, no JavaScript needed */
+  background-image:
+    linear-gradient(rgba(0, 212, 170, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 170, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ── Typography ──────────────────────────────────────────── */
+/* Syne is used for headings — geometric and distinctive */
+/* IBM Plex Mono is used for numbers — adds financial credibility */
+h1, h2, h3, .logo-text { font-family: 'Syne', sans-serif; }
+h2 { font-size: 1.25rem; font-weight: 700; }
+h3 { font-size: 1rem;    font-weight: 700; }
+
+/* ── Header ──────────────────────────────────────────────── */
+.site-header {
+  border-bottom: 1px solid var(--border);
+  padding: 1.25rem 2rem;
+  position: sticky;   /* stays at top when user scrolls */
+  top: 0;
+  background: rgba(10, 14, 23, 0.92);
+  backdrop-filter: blur(12px); /* frosted glass effect */
+  z-index: 100;
+}
+
+.header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.logo-icon  { width: 38px; height: 38px; flex-shrink: 0; }
+
+.logo-text {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.tagline {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+/* ── Notice Banner ───────────────────────────────────────── */
+/* Shown when an API fails and we fall back to default values */
+.notice-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 2rem;
+  background: rgba(245, 158, 11, 0.12);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+  color: var(--accent-amber);
+  font-size: 0.82rem;
+  gap: 1rem;
+}
+
+.notice-banner.error {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: var(--accent-red);
+}
+
+.notice-close {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.25rem;
+  opacity: 0.7;
+  transition: opacity var(--transition);
+}
+.notice-close:hover { opacity: 1; }
+
+/* ── App Layout ──────────────────────────────────────────── */
+/* Two columns on desktop: input (38%) | results (rest) */
+.app-layout {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: 38% 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* ── Input Panel ─────────────────────────────────────────── */
+.input-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  position: sticky; /* stays visible while user scrolls results */
+  top: 80px;
+}
+
+.panel-title {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── Form Fields ─────────────────────────────────────────── */
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+}
+
+.field-group.flex-grow { flex: 1; }
+
+.field-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+label {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.label-hint {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+/* Shared styles for all inputs and selects */
+input[type="text"],
+input[type="number"],
+select {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.9rem;
+  padding: 0.65rem 0.85rem;
+  width: 100%;
+  min-height: 44px; /* minimum touch target for accessibility */
+  appearance: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+/* Green glow when an input is focused */
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
+}
+
+/* Red border when validation fails */
+input.error { border-color: var(--accent-red); }
+
+input::placeholder { color: var(--text-muted); }
+
+/* Custom dropdown arrow for select elements */
+select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  padding-right: 2.5rem;
+}
+
+select option { background: #1a2234; }
+
+/* Inline error messages below invalid fields */
+.field-error {
+  font-size: 0.75rem;
+  color: var(--accent-red);
+  min-height: 1rem;
+}
+
+.field-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* ── Range Slider ────────────────────────────────────────── */
+.range-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  min-height: 44px;
+  background-clip: content-box;
+  padding-block: 19px;
+}
+
+/* The draggable circle on the slider */
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent-green);
+  cursor: pointer;
+  border: 3px solid var(--bg-card);
+  box-shadow: 0 0 0 2px var(--accent-green);
+}
+
+.range-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent-green);
+  cursor: pointer;
+  border: 3px solid var(--bg-card);
+}
+
+.range-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: -0.25rem;
+}
+
+/* ── Toggle Switch ───────────────────────────────────────── */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.toggle-label { flex: 1; }
+
+.toggle-btn {
+  width: 48px;
+  height: 26px;
+  background: var(--border);
+  border: 1.5px solid var(--border);
+  border-radius: 13px;
+  cursor: pointer;
+  position: relative;
+  transition: background var(--transition), border-color var(--transition);
+  flex-shrink: 0;
+}
+
+/* Green when toggled ON */
+.toggle-btn[aria-checked="true"] {
+  background: var(--accent-green);
+  border-color: var(--accent-green);
+}
+
+/* The white circle inside the toggle */
+.toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: var(--text-primary);
+  border-radius: 50%;
+  transition: transform var(--transition);
+}
+
+/* Slide the circle to the right when ON */
+.toggle-btn[aria-checked="true"] .toggle-thumb {
+  transform: translateX(22px);
+}
+
+.recurring-fields {
+  background: rgba(0, 212, 170, 0.04);
+  border: 1px solid rgba(0, 212, 170, 0.15);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+/* ── Analyze Button ──────────────────────────────────────── */
+.analyze-btn {
+  width: 100%;
+  padding: 0.9rem 1.5rem;
+  background: var(--accent-green);
+  color: #0a0e17;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 44px;
+  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+
+.analyze-btn:hover {
+  background: #00bfa0;
+  box-shadow: 0 4px 20px rgba(0, 212, 170, 0.3);
+  transform: translateY(-1px);
+}
+
+.analyze-btn:active  { transform: translateY(0); }
+
+.analyze-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Empty State ─────────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  background: var(--bg-card);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  min-height: 300px;
+  gap: 1rem;
+}
+
+.empty-icon { font-size: 3rem; opacity: 0.4; }
+
+.empty-state h3 { color: var(--text-secondary); }
+
+.empty-state p {
+  color: var(--text-muted);
+  max-width: 320px;
+  font-size: 0.85rem;
+}
+
+/* ── Loading / Skeleton ──────────────────────────────────── */
+.loading-state { display: flex; flex-direction: column; gap: 1.5rem; }
+
+.progress-log {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.progress-item {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  transition: color var(--transition);
+}
+
+/* Turns green when API call is done */
+.progress-item.done { color: var(--accent-green); }
+
+/* Grey pulsing placeholder cards shown while loading */
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 0.7; }
+}
+
+.skeleton-card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  height: 160px;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+/* ── Result Cards ────────────────────────────────────────── */
+.results-title {
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+}
+.results-title span { color: var(--text-primary); }
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Cards animate in with a staggered fade + slide up effect */
+.result-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  transition: background var(--transition), border-color var(--transition);
+  opacity: 0;
+  transform: translateY(16px);
+  animation: card-appear 0.4s ease forwards;
+}
+
+.result-card:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(0, 212, 170, 0.2);
+}
+
+@keyframes card-appear {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Each card appears slightly after the previous one */
+.result-card:nth-child(1) { animation-delay: 0.05s; }
+.result-card:nth-child(2) { animation-delay: 0.10s; }
+.result-card:nth-child(3) { animation-delay: 0.15s; }
+.result-card:nth-child(4) { animation-delay: 0.20s; }
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.card-icon { font-size: 1.1rem; }
+
+.card-header h3 {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 400;
+}
+
+.card-main-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-bottom: 0.75rem;
+}
+
+/* The big number in each card */
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: 500;
+  font-family: 'IBM Plex Mono', monospace;
+  line-height: 1.1;
+}
+
+.stat-value.green { color: var(--accent-green); }
+.stat-value.amber { color: var(--accent-amber); }
+.stat-value.red   { color: var(--accent-red);   }
+
+.stat-unit  { font-size: 0.8rem; color: var(--text-secondary); }
+.stat-label { font-size: 0.72rem; color: var(--text-muted); }
+
+.card-subtext {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Small badge showing which API provided the data */
+.source-badge {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  background: rgba(30, 45, 64, 0.8);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+/* Inflation card — two stats side by side */
+.inflation-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.inflation-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.inflation-stat .stat-value { font-size: 1.3rem; }
+
+/* Work hours card — day/week sub-stats */
+.work-substats {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+}
+
+/* Horizontal bar showing hours as % of a 40hr week */
+.hours-bar-track {
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.hours-bar-fill {
+  height: 100%;
+  background: var(--accent-amber);
+  border-radius: 3px;
+  width: 0; /* starts at 0, animated by JS */
+  transition: width 0.8s ease;
+}
+
+.hours-bar-label {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* ── Chart Section ───────────────────────────────────────── */
+.chart-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  opacity: 0;
+  animation: card-appear 0.5s ease 0.3s forwards;
+}
+
+.chart-title {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 400;
+  margin-bottom: 1rem;
+}
+
+.chart-wrapper {
+  position: relative;
+  height: 280px;
+  overflow-x: auto; /* scrollable on mobile */
+}
+
+/* ── Footer ──────────────────────────────────────────────── */
+.site-footer {
+  text-align: center;
+  padding: 2rem;
+  border-top: 1px solid var(--border);
+  margin-top: 3rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 2;
+}
+
+.site-footer a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.site-footer a:hover { color: var(--accent-green); }
+
+.disclaimer { font-style: italic; }
+
+/* ── Utility ─────────────────────────────────────────────── */
+/* .hidden completely removes an element from the layout */
+.hidden { display: none !important; }
+
+/* ── Responsive: Tablet (768px–1023px) ──────────────────── */
+@media (max-width: 1023px) {
+  .app-layout {
+    grid-template-columns: 1fr; /* single column */
+    padding: 1.25rem;
+  }
+  .input-panel { position: static; } /* no longer sticky */
+}
+
+/* ── Responsive: Mobile (< 768px) ───────────────────────── */
+@media (max-width: 767px) {
+  .site-header  { padding: 1rem; }
+  .tagline      { display: none; }
+  .app-layout   { padding: 1rem; gap: 1rem; }
+  .field-row    { flex-direction: column; gap: 0; }
+  .cards-grid   { grid-template-columns: 1fr; }
+  .skeleton-grid { grid-template-columns: 1fr; }
+  .inflation-stats { grid-template-columns: 1fr; }
+  .stat-value   { font-size: 1.4rem; }
+  .chart-wrapper { min-width: 500px; }
+}
