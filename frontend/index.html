@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PurchaseIQ — See the real price of everything</title>
+
+  <!-- Google Fonts: Syne for headings, IBM Plex Mono for numbers -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- Chart.js from CDN — gives us the animated line chart -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Our stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════
+       HEADER — logo + tagline
+  ════════════════════════════════════════════ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo">
+        <!-- SVG icon: dollar sign with a mini chart line -->
+        <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="20" cy="20" r="19" stroke="var(--accent-green)" stroke-width="1.5"/>
+          <text x="20" y="26" text-anchor="middle" font-size="18" fill="var(--accent-green)" font-family="IBM Plex Mono" font-weight="500">$</text>
+          <polyline points="6,32 13,24 20,28 27,16 34,10" stroke="var(--accent-green)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="logo-text">PurchaseIQ</span>
+      </div>
+      <p class="tagline">See the real price of everything.</p>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════
+       NOTICE BANNER
+       Hidden by default. Shows amber/red warnings
+       when an API fails or falls back to defaults.
+  ════════════════════════════════════════════ -->
+  <div id="notice-banner" class="notice-banner hidden" role="alert">
+    <span id="notice-text"></span>
+    <button id="notice-close" class="notice-close" aria-label="Dismiss notice">✕</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       MAIN LAYOUT
+       Two columns on desktop: input left, results right
+       Single column on mobile: input on top, results below
+  ════════════════════════════════════════════ -->
+  <main class="app-layout">
+
+    <!-- ── INPUT PANEL (left column) ─────────── -->
+    <section class="input-panel" aria-label="Purchase Details">
+      <h2 class="panel-title">Analyze a Purchase</h2>
+
+      <!-- Purchase Name -->
+      <div class="field-group">
+        <label for="purchase-name">What are you buying?</label>
+        <input type="text" id="purchase-name" placeholder="e.g. New iPhone 15 Pro" maxlength="80" autocomplete="off" />
+        <span class="field-error" id="err-name"></span>
+      </div>
+
+      <!-- Amount + Currency (side by side) -->
+      <div class="field-row">
+        <div class="field-group flex-grow">
+          <label for="purchase-amount">Purchase Amount</label>
+          <input type="number" id="purchase-amount" placeholder="0.00" min="0.01" step="any" />
+          <span class="field-error" id="err-amount"></span>
+        </div>
+        <div class="field-group">
+          <label for="currency">Currency</label>
+          <select id="currency">
+            <option value="USD">USD — US Dollar</option>
+            <option value="EUR">EUR — Euro</option>
+            <option value="GBP">GBP — British Pound</option>
+            <option value="RWF" selected>RWF — Rwandan Franc</option>
+            <option value="KES">KES — Kenyan Shilling</option>
+            <option value="NGN">NGN — Nigerian Naira</option>
+            <option value="GHS">GHS — Ghanaian Cedi</option>
+            <option value="ZAR">ZAR — South African Rand</option>
+            <option value="EGP">EGP — Egyptian Pound</option>
+            <option value="ETB">ETB — Ethiopian Birr</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Country for inflation data -->
+      <div class="field-group">
+        <label for="country">Your Country <span class="label-hint">(for inflation data)</span></label>
+        <select id="country">
+          <option value="US">🇺🇸 United States</option>
+          <option value="GB">🇬🇧 United Kingdom</option>
+          <option value="RW" selected>🇷🇼 Rwanda</option>
+          <option value="KE">🇰🇪 Kenya</option>
+          <option value="NG">🇳🇬 Nigeria</option>
+          <option value="GH">🇬🇭 Ghana</option>
+          <option value="ZA">🇿🇦 South Africa</option>
+          <option value="EG">🇪🇬 Egypt</option>
+          <option value="ET">🇪🇹 Ethiopia</option>
+          <option value="FR">🇫🇷 France</option>
+          <option value="DE">🇩🇪 Germany</option>
+          <option value="JP">🇯🇵 Japan</option>
+          <option value="IN">🇮🇳 India</option>
+          <option value="CN">🇨🇳 China</option>
+          <option value="BR">🇧🇷 Brazil</option>
+          <option value="CA">🇨🇦 Canada</option>
+          <option value="AU">🇦🇺 Australia</option>
+        </select>
+      </div>
+
+      <!-- Hourly wage (optional) -->
+      <div class="field-group">
+        <label for="hourly-wage">
+          Your Hourly Wage
+          <span class="label-hint">(optional — calculates work hours cost)</span>
+        </label>
+        <input type="number" id="hourly-wage" placeholder="Leave blank to skip" min="0.01" step="any" />
+      </div>
+
+      <!-- Time horizon slider -->
+      <div class="field-group">
+        <label for="time-horizon">
+          Time Horizon: <strong id="horizon-label">10 years</strong>
+        </label>
+        <input type="range" id="time-horizon" min="1" max="30" value="10" class="range-slider" />
+        <div class="range-labels">
+          <span>1 yr</span>
+          <span>30 yrs</span>
+        </div>
+      </div>
+
+      <!-- Recurring savings toggle -->
+      <div class="field-group">
+        <div class="toggle-row">
+          <label for="recurring-toggle" class="toggle-label">
+            Recurring Savings Mode
+            <span class="label-hint">(for subscriptions or recurring costs)</span>
+          </label>
+          <!-- Custom toggle button — aria-checked tracks on/off state -->
+          <button type="button" id="recurring-toggle" class="toggle-btn" role="switch" aria-checked="false">
+            <span class="toggle-thumb"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Extra fields shown only when recurring toggle is ON -->
+      <div id="recurring-fields" class="recurring-fields hidden">
+        <div class="field-row">
+          <div class="field-group flex-grow">
+            <label for="cost-this">Cost of this option <span class="label-hint">(per month)</span></label>
+            <input type="number" id="cost-this" placeholder="0.00" min="0" step="any" />
+          </div>
+          <div class="field-group flex-grow">
+            <label for="cost-alt">Cost of alternative <span class="label-hint">(per month)</span></label>
+            <input type="number" id="cost-alt" placeholder="0.00" min="0" step="any" />
+          </div>
+        </div>
+        <p class="field-hint">Example: Home gym ($0/mo) vs. gym membership ($60/mo) — saves $60/mo</p>
+      </div>
+
+      <!-- Main CTA button -->
+      <button id="analyze-btn" class="analyze-btn" type="button">
+        Run Analysis →
+      </button>
+    </section>
+
+    <!-- ── RESULTS PANEL (right column) ──────── -->
+    <section class="results-panel" id="results-panel" aria-label="Analysis Results" aria-live="polite">
+
+      <!-- Shown before any analysis is run -->
+      <div class="empty-state" id="empty-state">
+        <div class="empty-icon">📊</div>
+        <h3>Your analysis will appear here</h3>
+        <p>Fill in the purchase details on the left and click <strong>Run Analysis</strong> to see the true cost of your purchase.</p>
+      </div>
+
+      <!-- Shown while APIs are being called -->
+      <div class="loading-state hidden" id="loading-state">
+        <!-- Progress log: each line lights up as its API call resolves -->
+        <div class="progress-log" id="progress-log">
+          <div class="progress-item" id="prog-market">⏳ Fetching market data...</div>
+          <div class="progress-item" id="prog-inflation">⏳ Fetching inflation data...</div>
+          <div class="progress-item" id="prog-exchange">⏳ Fetching exchange rates...</div>
+        </div>
+        <!-- Skeleton cards: animated grey placeholders -->
+        <div class="skeleton-grid">
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+        </div>
+      </div>
+
+      <!-- Shown after analysis completes -->
+      <div class="results-content hidden" id="results-content">
+
+        <h2 class="results-title" id="results-title">
+          Analysis: <span id="results-item-name"></span>
+        </h2>
+
+        <!-- 4 Result Cards -->
+        <div class="cards-grid">
+
+          <!-- Card 1: Investment Potential -->
+          <div class="result-card" id="card-invest">
+            <div class="card-header">
+              <span class="card-icon">📈</span>
+              <h3>Investment Potential</h3>
+            </div>
+            <div class="card-main-stat">
+              <span id="invest-future-value" class="stat-value green"></span>
+            </div>
+            <p class="card-subtext" id="invest-subtext"></p>
+            <span class="source-badge" id="invest-source"></span>
+          </div>
+
+          <!-- Card 2: Inflation Reality -->
+          <div class="result-card" id="card-inflation">
+            <div class="card-header">
+              <span class="card-icon">📉</span>
+              <h3>Inflation Reality</h3>
+            </div>
+            <div class="inflation-stats">
+              <div class="inflation-stat">
+                <span class="stat-label">This item will cost</span>
+                <span id="inflation-future-cost" class="stat-value amber"></span>
+                <span class="stat-label">in <span id="inflation-years"></span> years</span>
+              </div>
+              <div class="inflation-stat">
+                <span class="stat-label">Your money's real buying power</span>
+                <span id="inflation-real-value" class="stat-value red"></span>
+                <span class="stat-label">by then</span>
+              </div>
+            </div>
+            <span class="source-badge" id="inflation-source"></span>
+          </div>
+
+          <!-- Card 3: Work Hours (only shown if wage was entered) -->
+          <div class="result-card hidden" id="card-hours">
+            <div class="card-header">
+              <span class="card-icon">⏰</span>
+              <h3>Work Hours Cost</h3>
+            </div>
+            <div class="card-main-stat">
+              <span id="work-hours" class="stat-value amber"></span>
+              <span class="stat-unit">hours of your life</span>
+            </div>
+            <div class="work-substats">
+              <span id="work-days"></span>
+              <span id="work-weeks"></span>
+            </div>
+            <!-- Visual bar showing hours as proportion of a 40hr week -->
+            <div class="hours-bar-container" aria-hidden="true">
+              <div class="hours-bar-track">
+                <div class="hours-bar-fill" id="hours-bar-fill"></div>
+              </div>
+              <span class="hours-bar-label">proportion of a 40-hour week</span>
+            </div>
+          </div>
+
+          <!-- Card 4: Break-Even (only shown if recurring toggle is on) -->
+          <div class="result-card hidden" id="card-breakeven">
+            <div class="card-header">
+              <span class="card-icon">⚖️</span>
+              <h3>Break-Even Analysis</h3>
+            </div>
+            <div class="card-main-stat">
+              <span>Pays for itself in</span>
+              <span id="breakeven-months" class="stat-value green"></span>
+            </div>
+            <p class="card-subtext" id="breakeven-subtext"></p>
+          </div>
+
+        </div><!-- /.cards-grid -->
+
+        <!-- Chart Section -->
+        <div class="chart-section">
+          <h3 class="chart-title" id="chart-title">Your Money Over Time</h3>
+          <div class="chart-wrapper">
+            <canvas id="growth-chart" role="img" aria-label="Investment growth chart"></canvas>
+          </div>
+        </div>
+
+      </div><!-- /#results-content -->
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════
+       FOOTER
+  ════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <p>
+      Powered by
+      <a href="https://www.alphavantage.co" target="_blank" rel="noopener">Alpha Vantage</a>,
+      <a href="https://datahelpdesk.worldbank.org/knowledgebase/articles/898581" target="_blank" rel="noopener">World Bank API</a>, and
+      <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener">ExchangeRate-API</a>
+    </p>
+    <p class="disclaimer">PurchaseIQ does not constitute financial advice. For educational purposes only.</p>
+  </footer>
+
+  <!-- ═══════════════════════════════════════════
+       SCRIPTS — loaded at bottom so HTML is ready
+       Order matters: calculator.js must come before
+       ui.js and main.js because they use its functions
+  ════════════════════════════════════════════ -->
+  <script src="js/calculator.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/chart.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+
+</body>
+</html>
