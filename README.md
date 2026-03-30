@@ -8,7 +8,7 @@
 [![Deployed](https://img.shields.io/badge/Status-Live-brightgreen)](http://13.222.29.180)
 
 Most people look at a price tag and see a number.
-PurchaseIQ makes you see the **full picture** —
+PurchaseIQ makes you see the **full picture** 
 what that money could grow into if invested,
 how inflation quietly eats away at its value,
 how many hours of your life you traded for it,
@@ -66,11 +66,11 @@ Two perspectives on inflation:
 - How much will this item **cost** in the future?
 - What is your money actually **worth** in the future?
 
-Powered by real country-specific CPI data from the World Bank —
+Powered by real country-specific CPI data from the World Bank 
 covering Rwanda, Kenya, Nigeria, USA, UK and 13 more countries.
 
 ###  Work Hours Cost
-Converts your purchase into something personal —
+Converts your purchase into something personal 
 hours, days, and weeks of your life.
 Because money is time, and time is the one thing you cannot earn back.
 
@@ -80,7 +80,7 @@ how many months until the savings pay back the upfront cost?
 Toggle on "Recurring Savings Mode" and find out.
 
 ### Live Investment Chart
-An animated three-line Chart.js graph showing:
+An animated three line Chart.js graph showing:
 -  What the money grows to if invested
 -  The flat "if spent" opportunity cost line  
 -  How purchasing power erodes with inflation
@@ -108,11 +108,11 @@ All three lines, over your chosen time horizon, in one clear picture.
 | Layer | Choice | Why |
 |-------|--------|-----|
 | Backend | Node.js + Express | Lightweight, fast, perfect for API proxying |
-| Frontend | Vanilla HTML/CSS/JS | No framework needed — keeps it deployable anywhere |
+| Frontend | Vanilla HTML/CSS/JS | No framework needed keeps it deployable anywhere |
 | Charts | Chart.js v4 | Animated, responsive, beautiful out of the box |
-| Security | Helmet + express-rate-limit | Secure headers + rate limiting on all API routes |
+| Security | Helmet + express rate limit | Secure headers + rate limiting on all API routes |
 | Process Manager | PM2 | Keeps Node.js alive and restarts on server reboot |
-| Load Balancer | Nginx | Round-robin traffic distribution across two servers |
+| Load Balancer | Nginx | Round robin traffic distribution across two servers |
 | Fonts | Syne + IBM Plex Mono | Financial credibility meets modern design |
 
 ---
@@ -125,18 +125,18 @@ purchaseiq/
 │   ├── routes/
 │   │   └── api.js          # 3 proxy endpoints + in-memory cache + fallbacks
 │   ├── server.js            # Express setup, security middleware, static serving
-│   ├── .env.example         # Key names without values — safe to commit
+│   ├── .env.example         # Key names without values safe to commit
 │   └── package.json         # Dependencies
 │
 ├── frontend/
 │   ├── css/
-│   │   └── style.css        # Dark fintech theme — Bloomberg meets fintech
+│   │   └── style.css        # Dark fintech theme  Bloomberg meets fintech
 │   ├── js/
-│   │   ├── calculator.js    # Pure financial math — no DOM, fully testable
+│   │   ├── calculator.js    # Pure financial math  no DOM, fully testable
 │   │   ├── api.js           # Calls our backend proxy (never external APIs)
-│   │   ├── chart.js         # Chart.js three-line animated chart
+│   │   ├── chart.js         # Chart.js three line animated chart
 │   │   ├── ui.js            # All DOM updates and result card rendering
-│   │   └── main.js          # Event listeners — wires everything together
+│   │   └── main.js          # Event listeners  wires everything together
 │   └── index.html           # Semantic, accessible, responsive layout
 │
 ├── .gitignore               # Protects .env and node_modules from GitHub
@@ -147,10 +147,10 @@ purchaseiq/
 
 ##  Screenshots
 
-**Input Panel — Enter your purchase details**
+**Input Panel  Enter your purchase details**
 ![Input Form](screenshots/input.png)
 
-**Results Panel — See the true cost**
+**Results Panel  See the true cost**
 ![Results](screenshots/results.png)
 
 ---
@@ -325,11 +325,11 @@ whether they are seeing live data or estimates.
 
 | Challenge | What Went Wrong | How We Fixed It |
 |-----------|----------------|-----------------|
-| World Bank nested JSON | Data is at `response[1][0].value` not `response.value` | Read the docs carefully — World Bank wraps data in a 2-element array |
+| World Bank nested JSON | Data is at `response[1][0].value` not `response.value` | Read the docs carefully  World Bank wraps data in a 2 element array |
 | ExchangeRate-API field name | We used `data.rates` but the API returns `data.conversion_rates` | Tested the raw API response with curl and spotted the mismatch |
-| Alpha Vantage rate limit | 25 requests/day hit quickly during development | Added 24-hour server-side cache so the API is only called once per day |
+| Alpha Vantage rate limit | 25 requests/day hit quickly during development | Added 24-hour server side cache so the API is only called once per day |
 | API key exposed on GitHub | `.env` was accidentally pushed early in development | Removed with `git rm --cached`, regenerated keys, added to `.gitignore` |
-| HAProxy conflict on Lb01 | Port 80 was already taken by a pre-installed HAProxy service | Stopped and disabled HAProxy before starting Nginx |
+| HAProxy conflict on Lb01 | Port 80 was already taken by a pre installed HAProxy service | Stopped and disabled HAProxy before starting Nginx |
 | Windows npm permission error | PowerShell blocked npm execution | Fixed with `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned` |
 
 ---
