@@ -37,6 +37,12 @@ app.use(cors());
 
 // Parse incoming JSON request bodies
 app.use(express.json());
+// Add X-Served-By header to show which server handled the request
+// This proves the load balancer is distributing traffic
+app.use((req, res, next) => {
+  res.setHeader('X-Served-By', require('os').hostname());
+  next();
+});
 
 // ── Rate Limiting ────────────────────────────────────────────
 // Limits each IP address to 100 requests per 15 minutes
