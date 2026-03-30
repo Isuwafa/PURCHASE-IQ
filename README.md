@@ -193,16 +193,16 @@ node server.js
 Anyone in the world
         |
         ▼
-http://13.222.29.180        ← Load Balancer (Lb01)
+http://LB01_IP        ← Load Balancer (Lb01)
         |
    Nginx round-robin
         |
    ┌────┴────┐
    ▼         ▼
-Web01       Web02
-3.92.239.4  34.238.49.220
-port 8000   port 8000
-PM2+Node    PM2+Node
+[Web01]      [Web02]
+WEB01_IP     WEB02_IP
+port 8000    port 8000
+PM2+Node     PM2+Node
 ```
 
 ### Deploy on Each Web Server
@@ -249,13 +249,13 @@ Nginx configuration on Lb01:
 # upstream defines our two backend servers
 # Nginx will alternate requests between them (round-robin)
 upstream purchaseiq_backend {
-    server 3.92.239.4:8000;      # Web01
-    server 34.238.49.220:8000;   # Web02
+    server WEB01_IP:8000;      # Web01
+    server WEB02_IP:8000;   # Web02
 }
 
 server {
     listen 80;
-    server_name 13.222.29.180;
+    server_name LB01_IP;
 
     location / {
         proxy_pass http://purchaseiq_backend;
