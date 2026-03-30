@@ -148,11 +148,12 @@ purchaseiq/
 ##  Screenshots
 
 **Input Panel  Enter your purchase details**
-![Input Form](screenshots/input.png)
+![Input Form](frontend/assets/screenshots/input1.png)
+![Input Form 2](frontend/assets/screenshots/input2.png)
 
-**Results Panel  See the true cost**
-![Results](screenshots/results.png)
-
+**Results Panel See the true cost**
+![Results](frontend/assets/screenshots/result.png)
+![Results 2](frontend/assets/screenshots/result2.png)
 ---
 
 ##  Run Locally
