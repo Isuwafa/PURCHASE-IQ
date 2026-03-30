@@ -288,6 +288,16 @@ If one server goes down, Nginx automatically sends all traffic to the other.
 
 ---
 
+##  SSL Certificate
+
+SSL termination is handled at the load balancer using Let's Encrypt:
+```bash
+sudo apt-get install -y certbot python3-certbot-nginx
+sudo certbot --nginx -d purchaseiq.suwafa.tech
+```
+
+Certbot automatically configures Nginx for HTTPS and sets up auto-renewal every 90 days.
+
 ##  How Caching Works
 
 Every API call is expensive  Alpha Vantage allows only 25/day.
@@ -354,5 +364,8 @@ whether they are seeing live data or estimates.
 - [IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono) — Numbers and monospace
 
 ---
+
+> *PurchaseIQ does not constitute financial advice. Built for educational purposes.*
+> *"Every purchase is a trade. Make sure you know what you're trading."*
 
 
