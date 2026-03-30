@@ -5,7 +5,7 @@
 [![Node.js](https://img.shields.io/badge/Node.js-18.x-green)](https://nodejs.org)
 [![Express](https://img.shields.io/badge/Express-4.x-lightgrey)](https://expressjs.com)
 [![APIs](https://img.shields.io/badge/External%20APIs-3-blue)](https://github.com/Isuwafa/PURCHASE-IQ)
-[![Deployed](https://img.shields.io/badge/Status-Live-brightgreen)](http://13.222.29.180)
+[![Deployed](https://img.shields.io/badge/Status-Live-brightgreen)](https://purchaseiq.suwafa.tech)
 
 Most people look at a price tag and see a number.
 PurchaseIQ makes you see the **full picture** 
@@ -20,7 +20,7 @@ This is not a gimmick. This is a financial reality check.
 
 ##  Live Application
 ```
-http://13.222.29.180
+https://purchaseiq.suwafa.tech
 ```
 
 ##  Demo Video
@@ -193,7 +193,7 @@ node server.js
 Anyone in the world
         |
         ▼
-http://LB01_IP        ← Load Balancer (Lb01)
+https://purchaseiq.suwafa.tech        ← Load Balancer (Lb01)
         |
    Nginx round-robin
         |
