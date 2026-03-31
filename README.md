@@ -24,7 +24,7 @@ https://purchaseiq.suwafa.tech
 ```
 
 ##  Demo Video
-*Watch on YouTube — 2 minutes*
+https://youtu.be/wwl-TS6KXkE
 
 ---
 
